@@ -161,3 +161,151 @@ service "RentalService" on rentalListener {
             return {success: true, message: "Property removed.", remaining_properties: remaining};
         }
     }
+
+
+
+// list_available_properties (server-side streaming)
+    
+    remote function ListAvailableProperties(ListPropertiesRequest req) returns stream<Property, error?>|error {
+        Property[] result = [];
+        lock {
+            foreach Property p in properties {
+                if p.status != AVAILABLE {
+                    continue;
+                }
+                if req.location.trim() != "" && p.location != req.location {
+                    continue;
+                }
+                if req.min_price > 0.0 && p.price_per_night < req.min_price {
+                    continue;
+                }
+                if req.max_price > 0.0 && p.price_per_night > req.max_price {
+                    continue;
+                }
+                result.push(p.clone());
+            }
+        }
+        return result.toStream();
+    }
+
+    
+    // search property
+    
+    remote function SearchProperty(SearchPropertyRequest req) returns SearchPropertyResponse|error {
+        lock {
+            Property? p = properties[req.property_id];
+            if p is () {
+                return {found: false, message: "Not Available", property: emptyProperty()};
+            }
+            return {found: true, message: "Property found.", property: p.clone()};
+        }
+    }
+
+    
+    // book property — adds a pending request to the booking cart
+    
+    remote function BookProperty(BookPropertyRequest req) returns BookPropertyResponse|error {
+        lock {
+            Property? p = properties[req.property_id];
+            if p is () {
+                return {success: false, message: "Property not found.", booking_request_id: ""};
+            }
+            if p.status != AVAILABLE {
+                return {success: false, message: "Property is not available for booking.", booking_request_id: ""};
+            }
+        }
+
+        int|error nights = nightsBetween(req.check_in, req.check_out);
+        if nights is error {
+            return {success: false, message: nights.message(), booking_request_id: ""};
+        }
+
+        string requestId = "REQ-" + uuid:createType4AsString().substring(0, 8);
+        CartItem item = {
+            bookingRequestId: requestId,
+            guestId: req.guest_id,
+            propertyId: req.property_id,
+            checkIn: req.check_in,
+            checkOut: req.check_out
+        };
+
+        lock {
+            bookingCart[requestId] = item.clone();
+        }
+
+        return {success: true, message: "Added to booking cart. Call confirm_booking to finalize.", booking_request_id: requestId};
+    }
+
+    
+    // confirm booking
+    
+    remote function ConfirmBooking(ConfirmBookingRequest req) returns ConfirmBookingResponse|error {
+        CartItem cartItem;
+        lock {
+            CartItem? item = bookingCart[req.booking_request_id];
+            if item is () {
+                return {success: false, message: "Booking request not found or already processed.",
+                        booking_id: "", nights: 0, total_cost: 0.0, property: emptyProperty()};
+            }
+            if item.guestId != req.guest_id {
+                return {success: false, message: "This booking request does not belong to the given guest.",
+                        booking_id: "", nights: 0, total_cost: 0.0, property: emptyProperty()};
+            }
+            cartItem = item.clone();
+        }
+
+        Property property;
+        lock {
+            Property? p = properties[cartItem.propertyId];
+            if p is () {
+                return {success: false, message: "Property no longer exists.",
+                        booking_id: "", nights: 0, total_cost: 0.0, property: emptyProperty()};
+            }
+            property = p.clone();
+        }
+
+        // Re-verify no date overlap with already-confirmed bookings 
+        lock {
+            foreach ConfirmedBookingRecord existing in confirmedBookings {
+                if existing.propertyId == cartItem.propertyId
+                        && datesOverlap(cartItem.checkIn, cartItem.checkOut, existing.checkIn, existing.checkOut) {
+                    return {success: false, message: "Property is already booked for overlapping dates.",
+                            booking_id: "", nights: 0, total_cost: 0.0, property: property};
+                }
+            }
+        }
+
+        int|error nights = nightsBetween(cartItem.checkIn, cartItem.checkOut);
+        if nights is error {
+            return {success: false, message: nights.message(),
+                    booking_id: "", nights: 0, total_cost: 0.0, property: property};
+        }
+
+        decimal totalCost = <decimal>nights * <decimal>property.price_per_night;
+        string bookingId = "BKG-" + uuid:createType4AsString().substring(0, 8);
+
+        ConfirmedBookingRecord confirmed = {
+            bookingId: bookingId,
+            guestId: cartItem.guestId,
+            propertyId: cartItem.propertyId,
+            checkIn: cartItem.checkIn,
+            checkOut: cartItem.checkOut,
+            nights: nights,
+            totalCost: totalCost
+        };
+
+        lock {
+            confirmedBookings[bookingId] = confirmed.clone();
+            _ = bookingCart.remove(req.booking_request_id);
+        }
+
+        return {
+            success: true,
+            message: "Booking confirmed.",
+            booking_id: bookingId,
+            nights: nights,
+            total_cost: <float>totalCost,
+            property: property
+        };
+    }
+}
