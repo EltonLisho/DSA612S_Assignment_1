@@ -228,4 +228,9 @@ between what `bal grpc` generated on your machine and what's referenced in
 - **IDs** — `PROP-`, `USR-`, `REQ-`, and `BKG-` prefixed IDs generated from
   `uuid:createType4AsString()`, truncated for readability.
 
+  ## 10. Github Good Practices
+  - **Commiting changes**
+  - Create your own branch from the `main` branch and push any changes you make to the codebase there.
+  - Await for approval to merge with `main` branch
+
 
