@@ -1,0 +1,7 @@
+[package]
+org = "ministry_tourism"
+name = "rental_client"
+version = "0.1.0"
+
+[build-options]
+observabilityIncluded = false
