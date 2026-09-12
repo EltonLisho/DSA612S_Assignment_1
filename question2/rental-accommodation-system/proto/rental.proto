@@ -1,0 +1,174 @@
+syntax = "proto3";
+
+package rental;
+
+
+// Enums
+
+
+enum PropertyStatus {
+  AVAILABLE = 0;
+  UNAVAILABLE = 1;
+  UNDER_MAINTENANCE = 2;
+}
+
+enum UserRole {
+  HOST = 0;
+  GUEST = 1;
+}
+
+
+// Core data types
+
+
+message Property {
+  string property_id = 1;
+  string host_id = 2;
+  string name = 3;
+  string location = 4;
+  string property_type = 5;      // e.g. Apartment, Cabin, Guesthouse
+  double price_per_night = 6;
+  PropertyStatus status = 7;
+}
+
+message User {
+  string user_id = 1;            // left blank by the client; assigned by server
+  string name = 2;
+  string email = 3;
+  UserRole role = 4;
+}
+
+
+// add_property (Simple RPC)
+
+
+message AddPropertyRequest {
+  string host_id = 1;
+  string name = 2;
+  string location = 3;
+  string property_type = 4;
+  double price_per_night = 5;
+  PropertyStatus status = 6;
+}
+
+message AddPropertyResponse {
+  bool success = 1;
+  string message = 2;
+  string property_id = 3;
+}
+
+
+// create_users (Client-side streaming)
+
+
+message CreateUsersResponse {
+  bool success = 1;
+  string message = 2;
+  int32 total_created = 3;
+  repeated string user_ids = 4;
+}
+
+
+// update_property (Simple RPC)
+
+message UpdatePropertyRequest {
+  string property_id = 1;
+  string host_id = 2;            // must match the owning host
+  double price_per_night = 3;
+  PropertyStatus status = 4;
+}
+
+message UpdatePropertyResponse {
+  bool success = 1;
+  string message = 2;
+  Property property = 3;
+}
+
+
+// remove_property (Simple RPC)
+
+
+message RemovePropertyRequest {
+  string property_id = 1;
+  string host_id = 2;            // must match the owning host
+}
+
+message RemovePropertyResponse {
+  bool success = 1;
+  string message = 2;
+  repeated Property remaining_properties = 3;  // this host's remaining listings
+}
+
+
+// list_available_properties (Server-side streaming)
+
+
+message ListPropertiesRequest {
+  string location = 1;    // optional filter; blank = any
+  double min_price = 2;   // optional filter; 0 = no minimum
+  double max_price = 3;   // optional filter; 0 = no maximum
+}
+
+
+// search_property (Simple RPC)
+
+
+message SearchPropertyRequest {
+  string property_id = 1;
+}
+
+message SearchPropertyResponse {
+  bool found = 1;
+  string message = 2;     // "Not Available" when found == false
+  Property property = 3;
+}
+
+
+// book_property (Simple RPC) — adds to a temporary booking cart
+
+
+message BookPropertyRequest {
+  string guest_id = 1;
+  string property_id = 2;
+  string check_in = 3;    // ISO date, "YYYY-MM-DD"
+  string check_out = 4;   // ISO date, "YYYY-MM-DD"
+}
+
+message BookPropertyResponse {
+  bool success = 1;
+  string message = 2;
+  string booking_request_id = 3;   // pass this to confirm_booking
+}
+
+
+// confirm_booking (Simple RPC)
+
+
+message ConfirmBookingRequest {
+  string booking_request_id = 1;
+  string guest_id = 2;
+}
+
+message ConfirmBookingResponse {
+  bool success = 1;
+  string message = 2;
+  string booking_id = 3;
+  int32 nights = 4;
+  double total_cost = 5;
+  Property property = 6;
+}
+
+
+// Service
+
+
+service RentalService {
+  rpc AddProperty(AddPropertyRequest) returns (AddPropertyResponse);
+  rpc CreateUsers(stream User) returns (CreateUsersResponse);
+  rpc UpdateProperty(UpdatePropertyRequest) returns (UpdatePropertyResponse);
+  rpc RemoveProperty(RemovePropertyRequest) returns (RemovePropertyResponse);
+  rpc ListAvailableProperties(ListPropertiesRequest) returns (stream Property);
+  rpc SearchProperty(SearchPropertyRequest) returns (SearchPropertyResponse);
+  rpc BookProperty(BookPropertyRequest) returns (BookPropertyResponse);
+  rpc ConfirmBooking(ConfirmBookingRequest) returns (ConfirmBookingResponse);
+}
