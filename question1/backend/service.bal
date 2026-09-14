@@ -746,3 +746,111 @@ resource function put assets/[string assetTag]/loans/[string loanId]/returnLoan(
 
     return http:NOT_FOUND;
 }
+
+
+// CREATE BOOKING
+// POST /assets/{assetTag}/book
+
+resource function post assets/[string assetTag]/book(
+    @http:Payload Booking booking
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    if asset.status == "DISPOSED" ||
+        asset.status == "UNDER_MAINTENANCE" ||
+        asset.status == "LOANED_OUT" {
+
+        return http:CONFLICT;
+    }
+
+    foreach Booking existingBooking in asset.bookings {
+
+        if existingBooking.bookingId == booking.bookingId {
+            return http:CONFLICT;
+        }
+
+        if existingBooking.status == "ACTIVE" &&
+            booking.startDate < existingBooking.endDate &&
+            booking.endDate > existingBooking.startDate {
+
+            return http:CONFLICT;
+        }
+    }
+
+    asset.bookings.push(booking);
+
+    asset.status = "OCCUPIED";
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+// GET BOOKINGS
+// GET /assets/{assetTag}/bookings
+
+resource function get assets/[string assetTag]/bookings()
+    returns Booking[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is Asset {
+        return asset.bookings;
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+// DELETE BOOKING
+// DELETE /assets/{assetTag}/bookings/{bookingId}
+
+resource function delete assets/[string assetTag]/bookings/[string bookingId]()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    Booking[] updatedBookings = [];
+    boolean found = false;
+
+    foreach Booking booking in asset.bookings {
+
+        if booking.bookingId == bookingId {
+            found = true;
+        } else {
+            updatedBookings.push(booking);
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    asset.bookings = updatedBookings;
+
+    if asset.bookings.length() == 0 {
+        asset.status = "AVAILABLE";
+    }
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+
+
+}
