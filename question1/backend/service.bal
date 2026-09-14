@@ -142,3 +142,88 @@ service / on new http:Listener(9090) {
         return result;
     }
 
+
+
+
+// GET COMPONENTS
+// GET /assets/{assetTag}/components
+
+
+resource function get assets/[string assetTag]/components()
+    returns Component[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is Asset {
+        return asset.components;
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+// ADD COMPONENT
+// POST /assets/{assetTag}/components
+
+
+resource function post assets/[string assetTag]/components(
+    @http:Payload Component component
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach Component existingComponent in asset.components {
+
+        if existingComponent.compId == component.compId {
+            return http:CONFLICT;
+        }
+    }
+
+    asset.components.push(component);
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+// DELETE COMPONENT
+// DELETE /assets/{assetTag}/components/{compId}
+
+
+resource function delete assets/[string assetTag]/components/[string compId]()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    Component[] updatedComponents = [];
+    boolean found = false;
+
+    foreach Component component in asset.components {
+
+        if component.compId == compId {
+            found = true;
+        } else {
+            updatedComponents.push(component);
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    asset.components = updatedComponents;
+
+    assets.put(asset);
+
+    return asset;
+}
+
