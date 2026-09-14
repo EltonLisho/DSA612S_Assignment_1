@@ -227,3 +227,251 @@ resource function delete assets/[string assetTag]/components/[string compId]()
     return asset;
 }
 
+// GET SCHEDULES
+// GET /assets/{assetTag}/schedules
+
+
+resource function get assets/[string assetTag]/schedules()
+    returns Schedule[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is Asset {
+        return asset.schedules;
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+
+// ADD SCHEDULE
+// POST /assets/{assetTag}/schedules
+
+
+resource function post assets/[string assetTag]/schedules(
+    @http:Payload Schedule schedule
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach Schedule existingSchedule in asset.schedules {
+
+        if existingSchedule.scheduleId == schedule.scheduleId {
+            return http:CONFLICT;
+        }
+    }
+
+    asset.schedules.push(schedule);
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+
+// UPDATE SCHEDULE
+// PUT /assets/{assetTag}/schedules/{scheduleId}
+
+
+resource function put assets/[string assetTag]/schedules/[string scheduleId](
+    @http:Payload Schedule updatedSchedule
+) returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    boolean found = false;
+
+    foreach int i in 0 ..< asset.schedules.length() {
+
+        if asset.schedules[i].scheduleId == scheduleId {
+
+            asset.schedules[i] = updatedSchedule;
+
+            found = true;
+
+            break;
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+
+// DELETE SCHEDULE
+// DELETE /assets/{assetTag}/schedules/{scheduleId}
+
+resource function delete assets/[string assetTag]/schedules/[string scheduleId]()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    Schedule[] updatedSchedules = [];
+    boolean found = false;
+
+    foreach Schedule schedule in asset.schedules {
+
+        if schedule.scheduleId == scheduleId {
+            found = true;
+        } else {
+            updatedSchedules.push(schedule);
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    asset.schedules = updatedSchedules;
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+
+// GET ALL WORK ORDERS
+// GET /assets/{assetTag}/workorders
+
+resource function get assets/[string assetTag]/workorders()
+    returns WorkOrder[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is Asset {
+        return asset.workOrders;
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+// CREATE WORK ORDER
+// POST /assets/{assetTag}/workorders
+
+resource function post assets/[string assetTag]/workorders(
+    @http:Payload WorkOrder workOrder
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach WorkOrder existingOrder in asset.workOrders {
+
+        if existingOrder.orderId == workOrder.orderId {
+            return http:CONFLICT;
+        }
+    }
+
+    asset.workOrders.push(workOrder);
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+// UPDATE WORK ORDER
+// PUT /assets/{assetTag}/workorders/{orderId}
+
+resource function put assets/[string assetTag]/workorders/[string orderId](
+    @http:Payload WorkOrder updatedOrder
+) returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    boolean found = false;
+
+    foreach int i in 0 ..< asset.workOrders.length() {
+
+        if asset.workOrders[i].orderId == orderId {
+
+            asset.workOrders[i] = updatedOrder;
+
+            found = true;
+
+            break;
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+// DELETE WORK ORDER
+// DELETE /assets/{assetTag}/workorders/{orderId}
+
+resource function delete assets/[string assetTag]/workorders/[string orderId]()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    WorkOrder[] updatedOrders = [];
+    boolean found = false;
+
+    foreach WorkOrder workOrder in asset.workOrders {
+
+        if workOrder.orderId == orderId {
+            found = true;
+        } else {
+            updatedOrders.push(workOrder);
+        }
+    }
+
+    if !found {
+        return http:NOT_FOUND;
+    }
+
+    asset.workOrders = updatedOrders;
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
