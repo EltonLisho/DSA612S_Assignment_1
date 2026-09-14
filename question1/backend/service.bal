@@ -474,4 +474,275 @@ resource function delete assets/[string assetTag]/workorders/[string orderId]()
     return asset;
 }
 
+// GET TASKS
+// GET /assets/{assetTag}/workorders/{orderId}/tasks
 
+resource function get assets/[string assetTag]/workorders/[string orderId]/tasks()
+    returns Task[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach WorkOrder workOrder in asset.workOrders {
+
+        if workOrder.orderId == orderId {
+            return workOrder.tasks;
+        }
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+// ADD TASK
+// POST /assets/{assetTag}/workorders/{orderId}/tasks
+
+resource function post assets/[string assetTag]/workorders/[string orderId]/tasks(
+    @http:Payload Task task
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach int i in 0 ..< asset.workOrders.length() {
+
+        if asset.workOrders[i].orderId == orderId {
+
+            foreach Task existingTask in asset.workOrders[i].tasks {
+
+                if existingTask.taskId == task.taskId {
+                    return http:CONFLICT;
+                }
+            }
+
+            asset.workOrders[i].tasks.push(task);
+
+            assets.put(asset);
+
+            return asset;
+        }
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+// UPDATE TASK
+// PUT /assets/{assetTag}/workorders/{orderId}/tasks/{taskId}
+
+resource function put assets/[string assetTag]/workorders/[string orderId]/tasks/[string taskId](
+    @http:Payload Task updatedTask
+) returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach int i in 0 ..< asset.workOrders.length() {
+
+        if asset.workOrders[i].orderId == orderId {
+
+            foreach int j in 0 ..< asset.workOrders[i].tasks.length() {
+
+                if asset.workOrders[i].tasks[j].taskId == taskId {
+
+                    asset.workOrders[i].tasks[j] = updatedTask;
+
+                    assets.put(asset);
+
+                    return asset;
+                }
+            }
+
+            return http:NOT_FOUND;
+        }
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+// DELETE TASK
+// DELETE /assets/{assetTag}/workorders/{orderId}/tasks/{taskId}
+
+resource function delete assets/[string assetTag]/workorders/[string orderId]/tasks/[string taskId]()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach int i in 0 ..< asset.workOrders.length() {
+
+        if asset.workOrders[i].orderId == orderId {
+
+            Task[] updatedTasks = [];
+            boolean found = false;
+
+            foreach Task task in asset.workOrders[i].tasks {
+
+                if task.taskId == taskId {
+                    found = true;
+                } else {
+                    updatedTasks.push(task);
+                }
+            }
+
+            if !found {
+                return http:NOT_FOUND;
+            }
+
+            asset.workOrders[i].tasks = updatedTasks;
+
+            assets.put(asset);
+
+            return asset;
+        }
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+// GET ALL INSTITUTIONS
+// GET /institutions
+
+resource function get institutions()
+    returns Institution[] {
+
+    return institutions.toArray();
+}
+
+
+
+// CREATE INSTITUTION
+// POST /institutions
+
+resource function post institutions(
+    @http:Payload Institution institution
+) returns Institution|http:Conflict {
+
+    if institutions.hasKey(institution.institutionId) {
+        return http:CONFLICT;
+    }
+
+    institutions.put(institution);
+
+    return institution;
+}
+
+
+
+// DELETE INSTITUTION
+// DELETE /institutions/{institutionId}
+
+resource function delete institutions/[string institutionId]()
+    returns http:Ok|http:NotFound {
+
+    if !institutions.hasKey(institutionId) {
+        return http:NOT_FOUND;
+    }
+
+    _ = institutions.removeIfHasKey(institutionId);
+
+    return <http:Ok>{
+        body: "Institution deleted successfully."
+    };
+}
+
+
+
+
+// LOAN ASSET
+// POST /assets/{assetTag}/loan
+
+resource function post assets/[string assetTag]/loan(
+    @http:Payload Loan loan
+) returns Asset|http:NotFound|http:Conflict {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    if asset.status != "AVAILABLE" {
+        return http:CONFLICT;
+    }
+
+    foreach Loan existingLoan in asset.loans {
+
+        if existingLoan.loanId == loan.loanId {
+            return http:CONFLICT;
+        }
+    }
+
+    asset.loans.push(loan);
+
+    asset.status = "LOANED_OUT";
+
+    assets.put(asset);
+
+    return asset;
+}
+
+
+
+
+// GET LOANS
+// GET /assets/{assetTag}/loans
+
+resource function get assets/[string assetTag]/loans()
+    returns Loan[]|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is Asset {
+        return asset.loans;
+    }
+
+    return http:NOT_FOUND;
+}
+
+
+
+// RETURN LOAN
+// PUT /assets/{assetTag}/loans/{loanId}/returnLoan
+
+resource function put assets/[string assetTag]/loans/[string loanId]/returnLoan()
+    returns Asset|http:NotFound {
+
+    Asset? asset = assets[assetTag];
+
+    if asset is () {
+        return http:NOT_FOUND;
+    }
+
+    foreach int i in 0 ..< asset.loans.length() {
+
+        if asset.loans[i].loanId == loanId {
+
+            asset.loans[i].status = "RETURNED";
+
+            asset.status = "AVAILABLE";
+
+            assets.put(asset);
+
+            return asset;
+        }
+    }
+
+    return http:NOT_FOUND;
+}
