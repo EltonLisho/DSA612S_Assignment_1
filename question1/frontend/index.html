@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Asset Management System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">A</div>
+
+            <div>
+                <h2>AssetHub</h2>
+                <span>Management System</span>
+            </div>
+        </div>
+
+
+        <nav class="navigation">
+
+            <button
+                type="button"
+                class="nav-item active"
+                data-section="dashboard">
+
+                <span>▦</span>
+                Dashboard
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-section="assets">
+
+                <span>▣</span>
+                Assets
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-section="maintenance">
+
+                <span>🔧</span>
+                Maintenance
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-section="loans">
+
+                <span>⇄</span>
+                Loans
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-section="bookings">
+
+                <span>▣</span>
+                Bookings
+
+            </button>
+
+
+            <button
+                type="button"
+                class="nav-item"
+                data-section="institutions">
+
+                <span>⌂</span>
+                Institutions
+
+            </button>
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <span>DSA621S</span>
+
+            <small>
+                Distributed Systems
+            </small>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main class="main">
+
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1 id="page-title">
+                    Dashboard
+                </h1>
+
+                <p id="page-subtitle">
+                    Overview of your asset management system
+                </p>
+
+            </div>
+
+
+            <div class="user-area">
+
+                <div class="status-dot"></div>
+
+                <span>
+                    System Online
+                </span>
+
+                <div class="user-avatar">
+                    A
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+             ================================================= -->
+
+        <div class="content">
+
+
+            <!-- =================================================
+                 DASHBOARD
+                 ================================================= -->
+
+            <section
+                id="dashboard-section"
+                class="page-section active">
+
+
+                <div class="welcome">
+
+                    <div>
+
+                        <h2>
+                            Welcome to AssetHub
+                        </h2>
+
+                        <p>
+                            Monitor assets, maintenance, loans and
+                            bookings from one central dashboard.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        onclick="showSection('assets')">
+
+                        + Manage Assets
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- STATISTICS -->
+
+                <div class="stats-grid">
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon">
+                            ▣
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Assets
+                            </span>
+
+                            <strong id="total-assets">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon available">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Available
+                            </span>
+
+                            <strong id="available-assets">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon loaned">
+                            ⇄
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Loaned Out
+                            </span>
+
+                            <strong id="loaned-assets">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-icon maintenance">
+                            🔧
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Maintenance
+                            </span>
+
+                            <strong id="maintenance-assets">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RECENT ASSETS -->
+
+                <div class="panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <h2>
+                                Recent Assets
+                            </h2>
+
+                            <p>
+                                Assets currently registered in the system
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="secondary-button"
+                            onclick="showSection('assets')">
+
+                            View All
+
+                        </button>
+
+                    </div>
+
+
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Asset Tag
+                                    </th>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                    <th>
+                                        Institution
+                                    </th>
+
+                                    <th>
+                                        Site
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="dashboard-assets-table">
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        class="loading">
+
+                                        Loading assets...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ASSETS
+                 ================================================= -->
+
+            <section
+                id="assets-section"
+                class="page-section">
+
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Assets
+                        </h2>
+
+                        <p>
+                            Manage all registered assets
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="primary-button"
+                        onclick="openAssetModal()">
+
+                        + Add Asset
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- SEARCH / FILTER -->
+
+                <div class="toolbar">
+
+                    <input
+                        type="text"
+                        id="asset-search"
+                        placeholder="Search assets...">
+
+
+                    <select id="status-filter">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option value="AVAILABLE">
+                            Available
+                        </option>
+
+                        <option value="LOANED_OUT">
+                            Loaned Out
+                        </option>
+
+                        <option value="OCCUPIED">
+                            Occupied
+                        </option>
+
+                        <option value="UNDER_MAINTENANCE">
+                            Under Maintenance
+                        </option>
+
+                        <option value="DISPOSED">
+                            Disposed
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ASSET TABLE -->
+
+                <div class="panel">
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Asset Tag
+                                    </th>
+
+                                    <th>
+                                        Name
+                                    </th>
+
+                                    <th>
+                                        Institution
+                                    </th>
+
+                                    <th>
+                                        Site
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Date Acquired
+                                    </th>
+
+                                    <th>
+                                        Components
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="assets-table">
+
+                                <tr>
+
+                                    <td
+                                        colspan="8"
+                                        class="loading">
+
+                                        Loading assets...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+<!-- =================================================
+     MAINTENANCE
+     ================================================= -->
+<section
+    id="maintenance-section"
+    class="page-section">
+
+    <div class="section-header">
+        <div>
+            <h2>Maintenance</h2>
+            <p>Monitor asset maintenance and work orders</p>
+        </div>
+    </div>
+
+
+    <!-- =================================================
+         MAINTENANCE SUMMARY
+         ================================================= -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-label">
+                Assets Under Maintenance
+            </div>
+
+            <div
+                class="stat-value"
+                id="maintenance-total">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-label">
+                Overdue
+            </div>
+
+            <div
+                class="stat-value"
+                id="maintenance-overdue">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-label">
+                Open Work Orders
+            </div>
+
+            <div
+                class="stat-value"
+                id="open-workorders">
+                0
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <div class="stat-label">
+                Scheduled Maintenance
+            </div>
+
+            <div
+                class="stat-value"
+                id="scheduled-maintenance">
+                0
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         MAINTENANCE SCHEDULES
+         ================================================= -->
+
+    <div class="content-card">
+
+        <div class="section-header">
+
+            <div>
+                <h3>Maintenance Schedules</h3>
+
+                <p>
+                    Scheduled servicing and maintenance activities
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="openScheduleModal()">
+
+                + Add Schedule
+
+            </button>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Asset</th>
+
+                        <th>Schedule ID</th>
+
+                        <th>Type</th>
+
+                        <th>Due Date</th>
+
+                        <th>Description</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="schedules-table">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-state">
+
+                            Loading schedules...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         WORK ORDERS
+         ================================================= -->
+
+    <div class="content-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h3>Work Orders</h3>
+
+                <p>
+                    Track faults, repairs and maintenance work
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="openWorkOrderModal()">
+
+                + Add Work Order
+
+            </button>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Order ID</th>
+
+                        <th>Asset</th>
+
+                        <th>Description</th>
+
+                        <th>Status</th>
+
+                        <th>Tasks</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="workorders-table">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-state">
+
+                            Loading work orders...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =================================================
+     LOANS
+     ================================================= -->
+<section id="loans-section" class="page-section">
+
+    <div class="section-header">
+
+        <div>
+            <h2>Loans</h2>
+
+            <p>
+                Manage assets that have been loaned out
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="openLoanModal()">
+
+            + Create Loan
+
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         LOAN STATISTICS
+         ================================================= -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ⇄
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Total Loans
+                </span>
+
+                <strong id="total-loans-count">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ●
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Active Loans
+                </span>
+
+                <strong id="active-loans-count">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✓
+            </div>
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Returned Loans
+                </span>
+
+                <strong id="returned-loans-count">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         LOANS TABLE
+         ================================================= -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <div>
+
+                <h3>
+                    Asset Loans
+                </h3>
+
+                <p>
+                    Active and returned asset loans
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="data-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Loan ID</th>
+
+                        <th>Asset</th>
+
+                        <th>Borrower</th>
+
+                        <th>Loan Date</th>
+
+                        <th>Due Date</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="loans-table">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty-state">
+
+                            No loans found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+    <!-- =================================================
+     BOOKINGS
+     ================================================= -->
+<section id="bookings-section" class="page-section">
+
+    <div class="section-header">
+        <div>
+            <h2>Bookings</h2>
+            <p>Manage asset bookings and reservations</p>
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            onclick="openBookingModal()">
+            + Add Booking
+        </button>
+    </div>
+
+
+    <!-- Booking statistics -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">▣</div>
+            <div class="stat-content">
+                <span class="stat-label">Total Bookings</span>
+                <strong id="total-bookings-count">0</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-content">
+                <span class="stat-label">Active Bookings</span>
+                <strong id="active-bookings-count">0</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">◷</div>
+            <div class="stat-content">
+                <span class="stat-label">Upcoming Bookings</span>
+                <strong id="upcoming-bookings-count">0</strong>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Bookings table -->
+    <div class="table-card">
+
+        <div class="table-header">
+            <div>
+                <h3>Asset Bookings</h3>
+                <p>Current and upcoming asset reservations</p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Asset</th>
+                        <th>Booked By</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="bookings-table">
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            No bookings found.
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+            <!-- =================================================
+                 INSTITUTIONS
+                 ================================================= -->
+
+            <section
+    id="institutions-section"
+    class="page-section">
+
+    <div class="section-header">
+        <div>
+            <h2>Institutions</h2>
+            <p>Manage participating institutions</p>
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="openInstitutionModal()">
+            + Add Institution
+        </button>
+    </div>
+
+    <!-- Institution Statistics -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">🏫</div>
+            <div class="stat-content">
+                <span class="stat-label">Total Institutions</span>
+                <span
+                    class="stat-value"
+                    id="totalInstitutions">
+                    0
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Search -->
+    <div class="content-card">
+
+        <div class="table-toolbar">
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="institutionSearch"
+                    placeholder="Search institutions..."
+                    oninput="filterInstitutions()">
+            </div>
+
+        </div>
+
+        <!-- Institutions Table -->
+        <div class="table-container">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Institution ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Assets</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="institutionsTableBody">
+
+                    <tr>
+                        <td
+                            colspan="5"
+                            class="empty-table">
+                            Loading institutions...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     ASSET MODAL
+     ========================================================= -->
+
+<!-- Asset Modal -->
+<div id="asset-modal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2 id="asset-modal-title">Add New Asset</h2>
+
+            <button type="button"
+                    class="modal-close"
+                    onclick="closeAssetModal()">
+                &times;
+            </button>
+        </div>
+
+        <form id="asset-form">
+
+            <div class="form-group">
+                <label for="assetTag">Asset Tag</label>
+                <input
+                    type="text"
+                    id="assetTag"
+                    name="assetTag"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="assetName">Asset Name</label>
+                <input
+                    type="text"
+                    id="assetName"
+                    name="assetName"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="institution">Institution</label>
+                <input
+                    type="text"
+                    id="institution"
+                    name="institution"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="site">Site</label>
+                <input
+                    type="text"
+                    id="site"
+                    name="site"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="assetStatus">Status</label>
+                <select id="assetStatus" name="status">
+                    <option value="AVAILABLE">Available</option>
+                    <option value="LOANED_OUT">Loaned Out</option>
+                    <option value="OCCUPIED">Occupied</option>
+                    <option value="UNDER_MAINTENANCE">Under Maintenance</option>
+                    <option value="DISPOSED">Disposed</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dateAcquired">Date Acquired</label>
+                <input
+                    type="date"
+                    id="dateAcquired"
+                    name="dateAcquired"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                ></textarea>
+            </div>
+
+            <div id="form-message"></div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeAssetModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Save Asset
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     SCHEDULE MODAL
+     ========================================================= -->
+
+<div id="schedule-modal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="schedule-modal-title">
+                Add Maintenance Schedule
+            </h2>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeScheduleModal()">
+                &times;
+            </button>
+
+        </div>
+
+
+        <form id="schedule-form">
+
+            <!-- Asset -->
+
+            <div class="form-group">
+
+                <label for="scheduleAsset">
+                    Asset
+                </label>
+
+                <select
+                    id="scheduleAsset"
+                    required>
+
+                    <option value="">
+                        Select an asset
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Schedule ID -->
+
+            <div class="form-group">
+
+                <label for="scheduleId">
+                    Schedule ID
+                </label>
+
+                <input
+                    type="text"
+                    id="scheduleId"
+                    placeholder="e.g. SCH-882"
+                    required>
+
+            </div>
+
+
+            <!-- Schedule Type -->
+
+            <div class="form-group">
+
+                <label for="scheduleType">
+                    Schedule Type
+                </label>
+
+                <select
+                    id="scheduleType"
+                    required>
+
+                    <option value="MAINTENANCE">
+                        Maintenance
+                    </option>
+
+                    <option value="SERVICING">Servicing
+                    </option>
+                    
+                    <option value="BOOKING">Booking
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Due Date -->
+
+            <div class="form-group">
+
+                <label for="scheduleDueDate">
+                    Due Date
+                </label>
+
+                <input
+                    type="date"
+                    id="scheduleDueDate"
+                    required>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="form-group">
+
+                <label for="scheduleDescription">
+                    Description
+                </label>
+
+                <textarea
+                    id="scheduleDescription"
+                    rows="4"
+                    placeholder="Describe the scheduled maintenance..."
+                    required></textarea>
+
+            </div>
+
+
+            <div id="schedule-form-message"
+                 class="form-message">
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeScheduleModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Schedule
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     WORK ORDER MODAL
+     ========================================================= -->
+
+<div
+    id="workorder-modal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="workorder-modal-title">
+                    Add Work Order
+                </h2>
+
+                <p>
+                    Create or update a maintenance work order
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeWorkOrderModal()">
+
+                &times;
+
+            </button>
+
+        </div>
+
+
+        <form id="workorder-form">
+
+
+            <!-- Asset -->
+
+            <div class="form-group">
+
+                <label for="workorder-asset">
+
+                    Asset
+
+                </label>
+
+
+                <select
+                    id="workorder-asset"
+                    required>
+
+                    <option value="">
+                        Select an asset
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Order ID -->
+
+            <div class="form-group">
+
+                <label for="workorder-id">
+
+                    Work Order ID
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="workorder-id"
+                    placeholder="e.g. WO-001"
+                    required>
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="form-group">
+
+                <label for="workorder-status">
+
+                    Status
+
+                </label>
+
+
+                <select
+                    id="workorder-status"
+                    required>
+
+                    <option value="OPEN">
+                        Open
+                    </option>
+
+                    <option value="IN_PROGRESS">
+                        In Progress
+                    </option>
+
+                    <option value="CLOSED">
+                        Closed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="form-group">
+
+                <label for="workorder-description">
+
+                    Description
+
+                </label>
+
+
+                <textarea
+                    id="workorder-description"
+                    rows="4"
+                    placeholder="Describe the problem or maintenance work..."
+                    required></textarea>
+
+            </div>
+
+
+            <div
+                id="workorder-form-message"
+                class="form-message">
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeWorkOrderModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Work Order
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TASK MODAL
+     ========================================================= -->
+
+<div
+    id="task-modal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="task-modal-title">
+                    Add Task
+                </h2>
+
+                <p id="task-modal-subtitle">
+                    Add a task to this work order
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeTaskModal()">
+
+                &times;
+
+            </button>
+
+        </div>
+
+
+        <form id="task-form">
+
+
+            <input
+                type="hidden"
+                id="task-asset-tag">
+
+
+            <input
+                type="hidden"
+                id="task-order-id">
+
+
+            <div class="form-group">
+
+                <label for="task-id">
+
+                    Task ID
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="task-id"
+                    placeholder="e.g. T-001"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="task-description">
+
+                    Task Description
+
+                </label>
+
+
+                <textarea
+                    id="task-description"
+                    rows="4"
+                    placeholder="e.g. Replace thermal sensor"
+                    required></textarea>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        id="task-completed">
+
+                    Completed
+
+                </label>
+
+            </div>
+
+
+            <div
+                id="task-form-message"
+                class="form-message">
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeTaskModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Task
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     BOOKING MODAL
+     ================================================= -->
+<div
+    id="booking-modal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h2 id="booking-modal-title">
+                    Add Booking
+                </h2>
+
+                <p>
+                    Create a reservation for an asset
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeBookingModal()">
+                &times;
+            </button>
+
+        </div>
+
+
+        <form id="booking-form">
+
+            <!-- Asset -->
+            <div class="form-group">
+
+                <label for="booking-asset">
+                    Asset
+                </label>
+
+                <select
+                    id="booking-asset"
+                    name="assetTag"
+                    required>
+
+                    <option value="">
+                        Select an asset
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Booked by -->
+            <div class="form-group">
+
+                <label for="booking-booked-by">
+                    Booked By
+                </label>
+
+                <input
+                    type="text"
+                    id="booking-booked-by"
+                    name="bookedBy"
+                    placeholder="Enter name"
+                    required>
+
+            </div>
+
+
+            <!-- Start date -->
+            <div class="form-group">
+
+                <label for="booking-start-date">
+                    Start Date
+                </label>
+
+                <input
+                    type="datetime-local"
+                    id="booking-start-date"
+                    name="startDate"
+                    required>
+
+            </div>
+
+
+            <!-- End date -->
+            <div class="form-group">
+
+                <label for="booking-end-date">
+                    End Date
+                </label>
+
+                <input
+                    type="datetime-local"
+                    id="booking-end-date"
+                    name="endDate"
+                    required>
+
+            </div>
+
+
+            <div
+                id="booking-form-message"
+                class="form-message">
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeBookingModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Create Booking
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     LOAN MODAL
+     ================================================= -->
+<div
+    id="loan-modal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2>
+                    Create Loan
+                </h2>
+
+                <p>
+                    Record an asset loan
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeLoanModal()">
+
+                &times;
+
+            </button>
+
+        </div>
+
+
+        <form id="loan-form">
+
+
+            <!-- Asset -->
+
+            <div class="form-group">
+
+                <label for="loan-asset">
+
+                    Asset
+
+                </label>
+
+
+                <select
+                    id="loan-asset"
+                    name="assetTag"
+                    required>
+
+                    <option value="">
+
+                        Select an asset
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Borrower -->
+
+            <div class="form-group">
+
+                <label for="loan-borrower">
+
+                    Borrower
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="loan-borrower"
+                    name="borrower"
+                    placeholder="Enter borrower name"
+                    required>
+
+            </div>
+
+
+            <!-- Loan Date -->
+
+            <div class="form-group">
+
+                <label for="loan-date">
+
+                    Loan Date
+
+                </label>
+
+
+                <input
+                    type="date"
+                    id="loan-date"
+                    name="loanDate"
+                    required>
+
+            </div>
+
+
+            <!-- Due Date -->
+
+            <div class="form-group">
+
+                <label for="loan-due-date">
+
+                    Due Date
+
+                </label>
+
+
+                <input
+                    type="date"
+                    id="loan-due-date"
+                    name="dueDate"
+                    required>
+
+            </div>
+
+
+            <div
+                id="loan-form-message"
+                class="form-message">
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeLoanModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Create Loan
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- Institution Modal -->
+<div
+    id="institutionModal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <div>
+                <h3>Add Institution</h3>
+                <p>Register a participating institution</p>
+            </div>
+
+            <button
+                class="modal-close"
+                onclick="closeInstitutionModal()">
+                &times;
+            </button>
+
+        </div>
+
+        <form id="institutionForm">
+
+            <div class="form-group">
+
+                <label for="institutionId">
+                    Institution ID
+                </label>
+
+                <input
+                    type="text"
+                    id="institutionId"
+                    name="institutionId"
+                    placeholder="e.g. NUST"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="institutionName">
+                    Institution Name
+                </label>
+
+                <input
+                    type="text"
+                    id="institutionName"
+                    name="institutionName"
+                    placeholder="e.g. Namibia University of Science and Technology"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="institutionDescription">
+                    Description
+                </label>
+
+                <textarea
+                    id="institutionDescription"
+                    name="institutionDescription"
+                    rows="4"
+                    placeholder="Describe the institution..."
+                    required></textarea>
+
+            </div>
+
+            <div
+                id="institutionFormMessage"
+                class="form-message">
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeInstitutionModal()">
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Add Institution
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+<script src="js/app.js?v=3"></script>
+
+
+
+</body>
+
+</html>
