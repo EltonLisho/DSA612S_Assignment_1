@@ -81,3 +81,64 @@ service / on new http:Listener(9090) {
         };
     }
 
+
+    // FILTERING
+   
+
+    resource function get assets/institution/[string institution]()
+        returns Asset[] {
+
+        Asset[] result = [];
+
+        foreach Asset asset in assets {
+            if asset.institution == institution {
+                result.push(asset);
+            }
+        }
+
+        return result;
+    }
+
+    resource function get assets/site/[string site]()
+        returns Asset[] {
+
+        Asset[] result = [];
+
+        foreach Asset asset in assets {
+            if asset.site == site {
+                result.push(asset);
+            }
+        }
+
+        return result;
+    }
+
+  
+
+    // OVERDUE MAINTENANCE
+   
+
+    resource function get assets/overdue()
+        returns Asset[] {
+
+        Asset[] result = [];
+
+        time:Utc now = time:utcNow();
+        string currentDate = now.toString().substring(0, 10);
+
+        foreach Asset asset in assets {
+
+            foreach Schedule schedule in asset.schedules {
+
+                if schedule.scheduleType == "MAINTENANCE" &&
+                    schedule.dueDate < currentDate {
+
+                    result.push(asset);
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
